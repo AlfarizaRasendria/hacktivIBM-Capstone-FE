@@ -1,5 +1,6 @@
 import './Navbar.css';
 import apssLogo from "../assets/apps-logo.png";
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
@@ -24,13 +25,13 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-4 gap-md-2">
             <li className="nav-item">
-              <a className="nav-link text-light" href="/">Home</a>
+              <Link className="nav-link text-light" to="/">Home</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-light" href="/login">Login</a>
+              <Link className="nav-link text-light" to="/login">Login</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-light" href="/register">Register</a>
+              <Link className="nav-link text-light" to="/register">Register</Link>
             </li>
           </ul>
         </div>
