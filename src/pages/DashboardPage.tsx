@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from "react-router-dom";
+
 import {
     Chart as ChartJS,
     BarElement,
@@ -22,7 +24,11 @@ type CarbonAttributes = {
     carbon_mt: number;
 };
 
+
+
 const DashboardPage = () => {
+    const navigate = useNavigate();
+
     const [electricityValue, setElectricityValue] = useState('');
     const [country, setCountry] = useState('us');
     const [state] = useState('');
@@ -56,6 +62,12 @@ const DashboardPage = () => {
         }
     };
 
+    const handleLogout = () => {
+        // misalnya: hapus token, redirect ke login, dsb
+        localStorage.removeItem("access_token");
+        // atau kalau pakai react-router
+        navigate("/login");
+    };
 
     // ChartJS Data
     const chartData = {
@@ -112,9 +124,12 @@ const DashboardPage = () => {
                         </a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link text-white" href="#">
+                        <button
+                            className="nav-link text-white bg-transparent border-0"
+                            onClick={handleLogout}
+                        >
                             Logout
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </div>
