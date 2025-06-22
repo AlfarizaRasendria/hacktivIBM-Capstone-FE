@@ -1,8 +1,10 @@
 // components/LoginForm.tsx
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import FormInput from './FormInput';
 
 const LoginForm = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -41,6 +43,7 @@ const LoginForm = () => {
                     type="submit"
                     className="btn btn-success"
                     style={{ width: '100%', maxWidth: '100px' }}
+                    onClick={() => navigate('/dashboard')}
                 >
                     Login
                 </button>
