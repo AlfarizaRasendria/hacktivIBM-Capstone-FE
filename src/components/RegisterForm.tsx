@@ -1,8 +1,11 @@
 // components/RegisterForm.tsx
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import FormInput from './FormInput';
 
 const RegisterForm = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         fullName: '',
         username: '',
@@ -15,20 +18,42 @@ const RegisterForm = () => {
         setFormData(prev => ({ ...prev, [id]: value }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Register form submitted:', formData);
-        // Validasi dan kirim data ke backend kalau perlu
+
+        try {
+            const response = await fetch('http://localhost:8080/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Register gagal');
+            }
+
+            alert('✅ Berhasil daftar!');
+            navigate('/login');
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                alert('❌ Error: ' + err.message);
+            } else {
+                alert('❌ Error tidak diketahui');
+            }
+        }
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <FormInput
-                label="FullName"
+                label="fullName"
                 type="text"
-                id="username"
-                value={formData.username}
+                id="fullName"
+                value={formData.fullName}
                 onChange={handleChange}
+                required
             />
             <FormInput
                 label="Username"
@@ -36,6 +61,7 @@ const RegisterForm = () => {
                 id="username"
                 value={formData.username}
                 onChange={handleChange}
+                required
             />
             <FormInput
                 label="Email"
@@ -43,6 +69,7 @@ const RegisterForm = () => {
                 id="email"
                 value={formData.email}
                 onChange={handleChange}
+                required
             />
             <FormInput
                 label="Password"
@@ -50,6 +77,7 @@ const RegisterForm = () => {
                 id="password"
                 value={formData.password}
                 onChange={handleChange}
+                required
             />
             <div className="d-flex justify-content-end">
                 <button

@@ -6,7 +6,7 @@ import FormInput from './FormInput';
 const LoginForm = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        username: '',
+        email: '',
         password: '',
     });
 
@@ -15,19 +15,44 @@ const LoginForm = () => {
         setFormData((prev) => ({ ...prev, [id]: value }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Login form submitted:', formData);
-        // TODO: validasi dan request ke backend
+
+        try {
+            const response = await fetch('http://localhost:8080/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Login failed');
+            }
+
+            // Misalnya backend kirim status sukses saja
+            alert('Login sukses!');
+            navigate('/dashboard');
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                alert(`Error ${err.message}`);
+            } else {
+                alert('Unknown error occurred');
+            }
+        }
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <FormInput
-                label="Username"
+                label="Email"
                 type="text"
-                id="username"
-                value={formData.username}
+                id="email"
+                value={formData.email}
                 onChange={handleChange}
             />
             <FormInput
@@ -43,7 +68,6 @@ const LoginForm = () => {
                     type="submit"
                     className="btn btn-success"
                     style={{ width: '100%', maxWidth: '100px' }}
-                    onClick={() => navigate('/dashboard')}
                 >
                     Login
                 </button>

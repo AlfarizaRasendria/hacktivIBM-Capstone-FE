@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from "react-router-dom";
+import DashboardLayout from '../layouts/DashboardLayout';
 
 import {
     Chart as ChartJS,
@@ -24,11 +24,7 @@ type CarbonAttributes = {
     carbon_mt: number;
 };
 
-
-
 const DashboardPage = () => {
-    const navigate = useNavigate();
-
     const [electricityValue, setElectricityValue] = useState('');
     const [country, setCountry] = useState('us');
     const [state] = useState('');
@@ -62,18 +58,12 @@ const DashboardPage = () => {
         }
     };
 
-    const handleLogout = () => {
-        // misalnya: hapus token, redirect ke login, dsb
-        localStorage.removeItem("access_token");
-        // atau kalau pakai react-router
-        navigate("/login");
-    };
 
     // ChartJS Data
     const chartData = {
         labels: ['Grams', 'Kilograms', 'Tonnes'],
         datasets: [
-            {
+            {   
                 label: 'Carbon Emissions',
                 backgroundColor: '#28a745',
                 data: carbonData
@@ -84,98 +74,48 @@ const DashboardPage = () => {
     };
 
     return (
-        <div className="d-flex">
-            {/* Sidebar */}
-            <div
-                className="bg-dark text-white p-3"
-                style={{ minHeight: '100vh', width: '250px' }}
-            >
-                <h4>Dashboard</h4>
-                <ul className="nav flex-column">
-                    <li className="nav-item">
-                        <a className="nav-link text-white" href="#">
-                            Electricity Estimation
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link text-white" href="#">
-                            Fuel Combustion Estimation
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link text-white" href="#">
-                            Vehicle Estimation
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link text-white" href="#">
-                            Flight Estimation
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link text-white" href="#">
-                            Shipping Estimation
-                        </a>
-                    </li>
-                    <hr className="bg-light" />
-                    <li className="nav-item">
-                        <a className="nav-link text-white" href="#">
-                            History
-                        </a>
-                    </li>
-                    <li className="nav-item">
-                        <button
-                            className="nav-link text-white bg-transparent border-0"
-                            onClick={handleLogout}
-                        >
-                            Logout
-                        </button>
-                    </li>
-                </ul>
-            </div>
+        <DashboardLayout>
+                {/* Main Content */}
+                
+                    <h3>Electricity Emission Estimation</h3>
+                    <form className="mb-4" onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label className="form-label">Electricity Value (MWh)</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                value={electricityValue}
+                                onChange={(e) => setElectricityValue(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label className="form-label">Country Code (e.g., us)</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value)}
+                                required
+                            />
+                            <small className="text-muted">
+                                You can see the country code list{' '}
+                                <span
+                                    style={{ color: '#0d6efd', cursor: 'pointer', textDecoration: 'underline' }}
+                                    onClick={() =>
+                                        window.open(
+                                            'https://faint-class-d56.notion.site/4b4f41db73254b4b915ba01d55eba7e7?v=4ad0efe7763540ab801fadd9f3bf1ce0',
+                                            '_blank'
+                                        )
+                                    }
+                                >
+                                    here
+                                </span>.
+                            </small>
 
 
-            {/* Main Content */}
-            <div className="p-4" style={{ flex: 1 }}>
-                <h3>Electricity Emission Estimation</h3>
-                <form className="mb-4" onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label className="form-label">Electricity Value (MWh)</label>
-                        <input
-                            type="number"
-                            className="form-control"
-                            value={electricityValue}
-                            onChange={(e) => setElectricityValue(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label">Country Code (e.g., us)</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={country}
-                            onChange={(e) => setCountry(e.target.value)}
-                            required
-                        />
-                        <small className="text-muted">
-                            You can see the country code list{' '}
-                            <span
-                                style={{ color: '#0d6efd', cursor: 'pointer', textDecoration: 'underline' }}
-                                onClick={() =>
-                                    window.open(
-                                        'https://faint-class-d56.notion.site/4b4f41db73254b4b915ba01d55eba7e7?v=4ad0efe7763540ab801fadd9f3bf1ce0',
-                                        '_blank'
-                                    )
-                                }
-                            >
-                                here
-                            </span>.
-                        </small>
-
-
-                    </div>
-                    {/* <div className="mb-3">
+                        </div>
+                        {/* <div className="mb-3">
                         <label className="form-label">State Code (optional)</label>
                         <input
                             type="text"
@@ -184,20 +124,19 @@ const DashboardPage = () => {
                             onChange={(e) => setState(e.target.value)}
                         />
                     </div> */}
-                    <button type="submit" className="btn btn-success">
-                        Estimate
-                    </button>
-                </form>
+                        <button type="submit" className="btn btn-success">
+                            Estimate
+                        </button>
+                    </form>
 
-                {/* Chart Display */}
-                {carbonData && (
-                    <div>
-                        <h5>Emissions Results:</h5>
-                        <Bar data={chartData} />
-                    </div>
-                )}
-            </div>
-        </div>
+                    {/* Chart Display */}
+                    {carbonData && (
+                        <div>
+                            <h5>Emissions Results:</h5>
+                            <Bar data={chartData} />
+                        </div>
+                    )}
+        </DashboardLayout>
     );
 };
 
